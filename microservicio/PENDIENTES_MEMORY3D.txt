@@ -1,0 +1,50 @@
+PENDIENTES MEMORY3D (despues de implementar nota)
+=================================================
+
+HECHO
+-----
+- Nota en Moodle implementada (intentos + gradebook):
+  - Se guarda intento por usuario al terminar partida.
+  - Nota final por intento = (rawscore / maxscore) * 100, limitada a 0..100.
+  - Se actualiza en calificaciones la mejor nota del alumno (mejor intento).
+  - Modos con maxscore:
+    - memory: pares * 120
+    - dragfill: items * 100
+    - classifier: items * 100
+    - intruder: rondas * 120
+
+1) Fuente desde recurso del curso (sin subir archivo nuevo) [HECHO]
+- Anadir selector de fuente en el modulo:
+  - PDF propio (actual)
+  - Recurso existente del curso/modulo
+- Permitir elegir un recurso ya existente (PDF/presentacion) y usar su archivo como entrada.
+- Resolver archivo via File API de Moodle (contexto del recurso), no solo por filemanager del modulo.
+
+2) Integracion con banco de preguntas de Moodle [HECHO]
+- Permitir seleccionar preguntas del banco (por categoria y/o filtro).
+- Convertir preguntas del banco al formato de cada juego:
+  - memory: question-answer
+  - dragfill: sentence-answer-options (si aplica)
+  - classifier / intruder: mapeos de categoria/opciones
+- Modo de origen configurable:
+  - Solo IA
+  - Solo banco
+  - Mixto IA + banco
+
+3) Detalles funcionales por cerrar con equipo docente [HECHO]
+- Regla de mezcla implementada:
+  - exacta (numero extra IA)
+  - porcentaje IA
+  - opcion "usar todas las categorias" (sin extras IA en ese modo).
+- Tipos de pregunta del banco por juego implementados:
+  - memory: multichoice, truefalse, shortanswer, numerical
+  - dragfill: shortanswer, numerical, multichoice
+  - classifier: multichoice, truefalse, shortanswer
+  - intruder: multichoice, truefalse, shortanswer
+- Politica de nota configurable en actividad:
+  - mejor intento
+  - ultimo intento
+  - media
+- Reporte para profesor en la vista de la actividad:
+  - historial de intentos por alumno (modo, puntuacion, nota, fecha)
+  - mostrando politica de nota activa.

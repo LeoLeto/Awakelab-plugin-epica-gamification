@@ -1,0 +1,11 @@
+# Python
+microservicio/.env
+microservicio/venv/
+microservicio/__pycache__/
+microservicio/**/__pycache__/
+microservicio/**/*.pyc
+microservicio/.pytest_cache/
+
+# OS
+.DS_Store
+Thumbs.db

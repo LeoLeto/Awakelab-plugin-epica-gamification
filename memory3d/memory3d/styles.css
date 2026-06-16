@@ -1,0 +1,461 @@
+.memory3d-canvas-container {
+    position: relative;
+    width: 100%;
+    min-height: 520px;
+    height: min(78vh, 900px);
+    max-height: 900px;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(120, 205, 255, 0.28);
+    box-shadow: 0 16px 48px rgba(3, 10, 23, 0.42);
+    background:
+        radial-gradient(circle at 12% 14%, rgba(255, 132, 205, 0.24) 0%, rgba(18, 27, 46, 0) 35%),
+        radial-gradient(circle at 82% 82%, rgba(64, 221, 173, 0.23) 0%, rgba(5, 9, 18, 0) 31%),
+        radial-gradient(circle at 52% 10%, rgba(140, 160, 255, 0.2) 0%, rgba(5, 9, 18, 0) 34%),
+        linear-gradient(160deg, #0c1028, #17133b 44%, #10274d);
+}
+
+.memory3d-canvas-container:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    min-height: 0;
+    max-height: none;
+    border-radius: 0;
+    border: 0;
+}
+
+.memory3d-canvas-container:-webkit-full-screen {
+    width: 100vw;
+    height: 100vh;
+    min-height: 0;
+    max-height: none;
+    border-radius: 0;
+    border: 0;
+}
+
+.memory3d-canvas-container:fullscreen.memory3d-use-custom-cursor,
+.memory3d-canvas-container:fullscreen.memory3d-use-custom-cursor *,
+.memory3d-canvas-container:-webkit-full-screen.memory3d-use-custom-cursor,
+.memory3d-canvas-container:-webkit-full-screen.memory3d-use-custom-cursor * {
+    cursor: auto !important;
+}
+
+.memory3d-canvas-container:fullscreen .memory3d-custom-cursor,
+.memory3d-canvas-container:-webkit-full-screen .memory3d-custom-cursor {
+    display: none;
+}
+
+.memory3d-canvas-container canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.memory3d-loading-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9;
+    pointer-events: none;
+    background: linear-gradient(160deg, rgba(10, 16, 40, 0.35), rgba(23, 19, 59, 0.25) 44%, rgba(16, 39, 77, 0.28));
+}
+
+.memory3d-loading-pill {
+    border-radius: 999px;
+    padding: 0.66rem 1.1rem;
+    color: #eef8ff;
+    border: 1px solid rgba(177, 224, 255, 0.6);
+    background: rgba(16, 28, 64, 0.85);
+    box-shadow: 0 8px 24px rgba(5, 10, 28, 0.45);
+    font: 700 0.88rem/1 "Trebuchet MS", Verdana, sans-serif;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.memory3d-canvas-container.memory3d-use-custom-cursor,
+.memory3d-canvas-container.memory3d-use-custom-cursor * {
+    cursor: none !important;
+}
+
+.memory3d-custom-cursor {
+    position: absolute;
+    left: -100px;
+    top: -100px;
+    width: 24px;
+    height: 24px;
+    margin-left: -12px;
+    margin-top: -12px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 214, 242, 0.88);
+    box-shadow:
+        0 0 0 1px rgba(125, 217, 255, 0.25),
+        0 0 18px rgba(147, 106, 255, 0.55),
+        0 0 24px rgba(255, 156, 197, 0.35);
+    pointer-events: none;
+    z-index: 7;
+    opacity: 0;
+    transition: opacity 120ms ease, border-color 100ms ease;
+}
+
+.memory3d-custom-cursor::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 5px;
+    height: 5px;
+    margin-left: -2.5px;
+    margin-top: -2.5px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 10px rgba(121, 233, 255, 0.75);
+}
+
+.memory3d-custom-cursor.is-visible {
+    opacity: 1;
+}
+
+.memory3d-custom-cursor.is-down {
+    border-color: rgba(255, 199, 132, 0.95);
+    box-shadow:
+        0 0 0 1px rgba(255, 190, 116, 0.32),
+        0 0 20px rgba(255, 173, 83, 0.65),
+        0 0 28px rgba(255, 100, 148, 0.38);
+}
+
+.memory3d-hud {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1rem;
+    z-index: 4;
+}
+
+.memory3d-side-tags {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.8rem;
+}
+
+.memory3d-tag {
+    font: 700 0.78rem/1 "Trebuchet MS", Verdana, sans-serif;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
+    color: #eff6ff;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(8px);
+}
+
+.memory3d-tag-q {
+    background: linear-gradient(135deg, rgba(120, 92, 255, 0.75), rgba(51, 49, 171, 0.78));
+}
+
+.memory3d-tag-a {
+    background: linear-gradient(135deg, rgba(255, 141, 109, 0.76), rgba(16, 139, 133, 0.82));
+}
+
+.memory3d-hud-row {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+.memory3d-score-pill,
+.memory3d-message-pill {
+    color: #ebf6ff;
+    border: 1px solid rgba(204, 183, 255, 0.26);
+    background: rgba(19, 20, 53, 0.72);
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+}
+
+.memory3d-score-pill {
+    font: 700 0.9rem/1 "Trebuchet MS", Verdana, sans-serif;
+    letter-spacing: 0.02em;
+    padding: 0.58rem 0.8rem;
+}
+
+.memory3d-message-pill {
+    pointer-events: none;
+    font: 600 0.9rem/1.2 "Trebuchet MS", Verdana, sans-serif;
+    position: absolute;
+    top: 4.4rem;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 0;
+    text-align: center;
+    padding: 0.65rem 0.85rem;
+    max-width: min(760px, calc(100% - 2rem));
+    z-index: 5;
+}
+.memory3d-message-top-center {
+    position: absolute;
+    top: 4.4rem;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 0;
+    text-align: center;
+    max-width: min(760px, calc(100% - 2rem));
+    z-index: 5;
+}
+.memory3d-message-bottom-center {
+    top: auto;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.memory3d-memory-message-top {
+    position: absolute;
+    top: 4.4rem;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 0;
+    text-align: center;
+    max-width: min(760px, calc(100% - 2rem));
+    z-index: 5;
+}
+.memory3d-memory-action-row {
+    position: absolute;
+    left: 50%;
+    bottom: 1.2rem;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.7rem;
+    pointer-events: auto;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 120ms ease, visibility 120ms ease;
+}
+.memory3d-memory-action-row.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.memory3d-button {
+    pointer-events: auto;
+    border: 0;
+    border-radius: 10px;
+    padding: 0.58rem 0.78rem;
+    color: #f6fbff;
+    font: 700 0.82rem/1 "Trebuchet MS", Verdana, sans-serif;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 120ms ease, opacity 120ms ease;
+}
+
+.memory3d-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.memory3d-button:disabled {
+    opacity: 0.52;
+    cursor: not-allowed;
+}
+
+.memory3d-button-primary {
+    background: linear-gradient(135deg, #8d64ff, #3f5acf);
+}
+
+.memory3d-button-ghost {
+    background: rgba(34, 34, 68, 0.9);
+    border: 1px solid rgba(255, 176, 221, 0.42);
+}
+
+.memory3d-button-cancel {
+    background: linear-gradient(135deg, #ff9268, #9d456f);
+}
+
+@media (max-width: 900px) {
+    .memory3d-canvas-container {
+        min-height: 500px;
+        height: 76vh;
+    }
+
+    .memory3d-hud {
+        padding: 0.7rem;
+    }
+
+    .memory3d-hud-row {
+        gap: 0.5rem;
+    }
+
+    .memory3d-button {
+        font-size: 0.74rem;
+        padding: 0.52rem 0.65rem;
+    }
+
+    .memory3d-message-pill {
+        font-size: 0.82rem;
+        max-width: 100%;
+    }
+}
+
+@media (pointer: coarse) {
+    .memory3d-canvas-container.memory3d-use-custom-cursor,
+    .memory3d-canvas-container.memory3d-use-custom-cursor * {
+        cursor: auto !important;
+    }
+
+    .memory3d-custom-cursor {
+        display: none;
+    }
+}
+
+.memory3d-canvas-container.memory3d-dragfill-mode {
+    padding: 1rem;
+    overflow: auto;
+}
+
+.memory3d-dragfill-workspace {
+    display: grid;
+    grid-template-columns: minmax(280px, 0.95fr) minmax(380px, 1.35fr);
+    gap: 1rem;
+    position: relative;
+    z-index: 5;
+}
+
+.memory3d-dragfill-bank,
+.memory3d-dragfill-targets {
+    background: rgba(11, 18, 45, 0.56);
+    border: 1px solid rgba(133, 188, 255, 0.2);
+    border-radius: 14px;
+    padding: 0.85rem;
+    backdrop-filter: blur(4px);
+}
+
+.memory3d-dragfill-title {
+    margin: 0 0 0.65rem 0;
+    color: #e8f5ff;
+    font: 700 0.86rem/1 "Trebuchet MS", Verdana, sans-serif;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.memory3d-dragfill-bank-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.55rem;
+    align-content: start;
+}
+
+.memory3d-dragfill-board {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+}
+
+.memory3d-dragfill-card {
+    background: rgba(16, 22, 54, 0.78);
+    border: 1px solid rgba(139, 195, 255, 0.35);
+    border-radius: 14px;
+    padding: 0.8rem;
+    backdrop-filter: blur(4px);
+    transform-style: preserve-3d;
+    box-shadow: 0 8px 24px rgba(6, 11, 30, 0.35);
+    transform: perspective(850px) rotateX(4deg) translateZ(0);
+    transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.memory3d-dragfill-card:hover {
+    transform: perspective(850px) rotateX(4deg) translateY(-2px);
+    box-shadow: 0 12px 28px rgba(5, 11, 34, 0.45);
+}
+
+.memory3d-dragfill-card.is-solved {
+    border-color: rgba(103, 255, 182, 0.75);
+    box-shadow: 0 0 0 1px rgba(103, 255, 182, 0.2) inset;
+}
+
+.memory3d-dragfill-sentence {
+    margin: 0 0 0.7rem 0;
+    color: #eef6ff;
+    font: 600 0.96rem/1.5 "Trebuchet MS", Verdana, sans-serif;
+}
+
+.memory3d-dragfill-blank {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 108px;
+    margin: 0 0.25rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 8px;
+    border: 1px dashed rgba(181, 211, 255, 0.7);
+    background: rgba(20, 33, 74, 0.78);
+    color: #f7fbff;
+    transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+.memory3d-dragfill-blank.is-hover {
+    transform: translateY(-1px) scale(1.02);
+    border-color: rgba(189, 227, 255, 0.95);
+    background: rgba(42, 59, 112, 0.92);
+}
+
+.memory3d-dragfill-blank.is-correct {
+    border-style: solid;
+    border-color: rgba(88, 250, 165, 0.9);
+    background: rgba(20, 70, 54, 0.9);
+}
+
+.memory3d-dragfill-blank.is-wrong {
+    border-style: solid;
+    border-color: rgba(255, 125, 125, 0.95);
+    background: rgba(87, 27, 42, 0.9);
+}
+
+.memory3d-dragfill-hint {
+    margin-top: 0.2rem;
+    font: 600 0.74rem/1.2 "Trebuchet MS", Verdana, sans-serif;
+    letter-spacing: 0.02em;
+    color: rgba(206, 226, 255, 0.78);
+}
+
+.memory3d-dragfill-option {
+    border: 1px solid rgba(146, 201, 255, 0.45);
+    border-radius: 10px;
+    padding: 0.5rem 0.65rem;
+    color: #eaf5ff;
+    background: linear-gradient(150deg, rgba(84, 99, 201, 0.9), rgba(32, 109, 158, 0.88));
+    font: 700 0.76rem/1 "Trebuchet MS", Verdana, sans-serif;
+    letter-spacing: 0.02em;
+    cursor: grab;
+    transform: perspective(700px) rotateX(10deg);
+    box-shadow: 0 5px 14px rgba(9, 14, 38, 0.4);
+    transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+}
+
+.memory3d-dragfill-option:hover:not(:disabled) {
+    transform: perspective(700px) rotateX(10deg) translateY(-2px) scale(1.01);
+}
+
+.memory3d-dragfill-option.is-dragging {
+    opacity: 0.55;
+    transform: perspective(700px) rotateX(10deg) scale(1.08);
+}
+
+.memory3d-dragfill-option.is-used {
+    opacity: 0.42;
+}
+
+.memory3d-dragfill-option:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: perspective(700px) rotateX(10deg);
+}
+
+@media (max-width: 980px) {
+    .memory3d-dragfill-workspace {
+        grid-template-columns: 1fr;
+    }
+}
