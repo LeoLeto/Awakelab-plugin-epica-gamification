@@ -121,7 +121,11 @@ async def create_pairs_from_pdf(
                 status_code=422,
                 content={
                     "status": "error",
-                    "message": "The uploaded PDF has too little extractable text.",
+                    "message": (
+                        f"The uploaded PDF has too little extractable text "
+                        f"({len(clean_text.strip())} chars). "
+                        "The PDF may use scanned images or a non-standard text encoding."
+                    ),
                 },
             )
 
