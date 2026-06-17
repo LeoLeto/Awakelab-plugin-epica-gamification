@@ -24,7 +24,7 @@ class pairs_manager {
             $memory3d->pairsjson = $current ? (string)$current->pairsjson : '[]';
         }
         if (!isset($memory3d->lastaierror)) {
-            $memory3d->lastaierror = $current ? (string)$current->lastaierror : '';
+            $memory3d->lastaierror = '';
         }
         if (!isset($memory3d->aigeneratedat)) {
             $memory3d->aigeneratedat = $current ? (int)$current->aigeneratedat : 0;
