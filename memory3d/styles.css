@@ -459,3 +459,7 @@
         grid-template-columns: 1fr;
     }
 }
+
+.memory3d-report-title {
+    margin-top: 2.5rem;
+}

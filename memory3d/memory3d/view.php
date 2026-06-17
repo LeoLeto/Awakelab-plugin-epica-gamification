@@ -112,7 +112,7 @@ if (has_capability('moodle/course:managegrades', $context) || has_capability('mo
                  ORDER BY a.timemodified DESC, a.id DESC";
     $attemptrecords = $DB->get_records_sql($attemptsql, ['memory3did' => (int)$memory3d->id], 0, 200);
 
-    echo html_writer::tag('h3', get_string('attemptreporttitle', 'memory3d'));
+    echo html_writer::tag('h3', get_string('attemptreporttitle', 'memory3d'), ['class' => 'memory3d-report-title']);
     echo html_writer::tag(
         'p',
         get_string('attemptreportpolicy', 'memory3d', $gradepolicylabel)
