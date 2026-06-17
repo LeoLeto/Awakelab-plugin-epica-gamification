@@ -237,11 +237,23 @@ class backend_client {
     }
 
     private static function decode_backend_response($response, int $httpcode, string $gamemode, string $fileinfo = ''): array {
-        $httpdesc = $fileinfo !== '' ? $httpcode . ' — ' . $fileinfo : $httpcode;
-        if ($httpcode >= 300 && $httpcode < 400) {
-            throw new \moodle_exception('aierrorhttp', 'memory3d', '', $httpdesc);
-        }
-        if ($httpcode >= 400) {
+        $httpdesc = $fileinfo !== '' ? $httpcode . ' — ' . $fileinfo : (string)$httpcode;
+        if ($httpcode >= 300) {
+            // Try to surface the backend's own error message from the JSON body.
+            $backmsg = '';
+            if (is_string($response) && trim($response) !== '') {
+                $errjson = json_decode(trim($response), true);
+                if (is_array($errjson) && !empty($errjson['message'])) {
+                    $backmsg = (string)$errjson['message'];
+                } elseif (is_array($errjson) && !empty($errjson['detail'])) {
+                    // FastAPI validation errors use 'detail'.
+                    $detail = $errjson['detail'];
+                    $backmsg = is_string($detail) ? $detail : json_encode($detail);
+                }
+            }
+            if ($backmsg !== '') {
+                $httpdesc .= ': ' . $backmsg;
+            }
             throw new \moodle_exception('aierrorhttp', 'memory3d', '', $httpdesc);
         }
         if (!is_string($response) || trim($response) === '') {

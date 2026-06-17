@@ -196,6 +196,61 @@ async def create_pairs_from_pdf(
         )
 
 
+@router.post("/debug_pdf")
+async def debug_pdf_extraction(file: UploadFile = File(...)):
+    """Diagnose PDF extraction without calling OpenAI. Returns per-page stats and a text sample."""
+    try:
+        import fitz
+
+        pdf_bytes = await file.read()
+        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        total_pages = len(doc)
+        per_page = []
+
+        for page_num, page in enumerate(doc):
+            rect = page.rect
+            header_limit = rect.height * 0.10
+            footer_limit = rect.height * 0.90
+
+            block_chars = 0
+            blocks = page.get_text("blocks")
+            for block in blocks:
+                x0, y0, x1, y1, text, block_no, block_type = block
+                if block_type == 0 and y0 > header_limit and y1 < footer_limit:
+                    clean_chunk = text.strip()
+                    if clean_chunk and not (clean_chunk.isdigit() and len(clean_chunk) < 5):
+                        block_chars += len(clean_chunk)
+
+            fallback_chars = len(page.get_text("text").strip())
+            used_fallback = block_chars < 30
+            per_page.append({
+                "page": page_num + 1,
+                "block_chars": block_chars,
+                "fallback_chars": fallback_chars,
+                "used_fallback": used_fallback,
+            })
+
+        doc.close()
+
+        clean_text = extract_clean_text_from_pdf(pdf_bytes)
+        total_chars = len(clean_text.strip())
+
+        return {
+            "status": "success",
+            "filename": file.filename,
+            "total_pages": total_pages,
+            "total_chars_extracted": total_chars,
+            "would_pass_threshold": total_chars >= 50,
+            "per_page": per_page,
+            "text_sample": clean_text[:800] if clean_text else "",
+        }
+    except Exception as exc:
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "message": str(exc)},
+        )
+
+
 @router.post("/extract")
 async def extract_pdf_text(
     file: UploadFile = File(...),

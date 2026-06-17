@@ -1,4 +1,7 @@
+import logging
 import re
+
+logger = logging.getLogger(__name__)
 
 
 def extract_clean_text_from_pdf(pdf_bytes: bytes) -> str:
@@ -6,9 +9,11 @@ def extract_clean_text_from_pdf(pdf_bytes: bytes) -> str:
     import fitz
 
     doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    total_pages = len(doc)
     full_text = ""
+    fallback_pages = []
 
-    for page in doc:
+    for page_num, page in enumerate(doc):
         rect = page.rect
         header_limit = rect.height * 0.10
         footer_limit = rect.height * 0.90
@@ -26,7 +31,13 @@ def extract_clean_text_from_pdf(pdf_bytes: bytes) -> str:
         # Fallback for PDFs with nested XObjects or non-standard block structure
         # (common in PDFs exported from e-learning authoring tools like iSpring/Articulate)
         if len(page_text.strip()) < 30:
-            page_text = page.get_text("text").strip()
+            fallback_text = page.get_text("text").strip()
+            logger.debug(
+                "Page %d: block extraction yielded %d chars, fallback yielded %d chars",
+                page_num + 1, len(page_text.strip()), len(fallback_text),
+            )
+            page_text = fallback_text
+            fallback_pages.append(page_num + 1)
 
         full_text += page_text + "\n\n"
 
@@ -35,4 +46,15 @@ def extract_clean_text_from_pdf(pdf_bytes: bytes) -> str:
     full_text = re.sub(r"^\s*Page\s+\d+.*$", "", full_text, flags=re.MULTILINE)
     full_text = re.sub(r"^\s*\d+\s+of\s+\d+.*$", "", full_text, flags=re.MULTILINE)
     full_text = re.sub(r"\n{3,}", "\n\n", full_text)
-    return full_text.strip()
+    result = full_text.strip()
+
+    logger.info(
+        "PDF extraction complete: %d pages, %d chars extracted, "
+        "fallback used on %d pages: %s",
+        total_pages,
+        len(result),
+        len(fallback_pages),
+        fallback_pages if fallback_pages else "none",
+    )
+
+    return result
