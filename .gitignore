@@ -7,6 +7,9 @@ microservicio/**/__pycache__/
 microservicio/**/*.pyc
 microservicio/.pytest_cache/
 
+# Archives
+*.zip
+
 # OS
 .DS_Store
 Thumbs.db
