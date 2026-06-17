@@ -181,7 +181,8 @@ class backend_client {
         if (!empty($curlerror)) {
             throw new \moodle_exception('aierrorcurl', 'memory3d', '', $curlerror);
         }
-        return self::decode_backend_response($response, $httpcode, pairs_manager::normalize_game_mode($gamemode));
+        $fileinfo = $pdffile->get_filename() . ' (' . self::format_file_size((int)$pdffile->get_filesize()) . ')';
+        return self::decode_backend_response($response, $httpcode, pairs_manager::normalize_game_mode($gamemode), $fileinfo);
     }
 
     private static function resolve_text_endpoint(\stdClass $config): string {
@@ -228,12 +229,20 @@ class backend_client {
         return rtrim($legacytext, '/') . '/pairs_from_pdf';
     }
 
-    private static function decode_backend_response($response, int $httpcode, string $gamemode): array {
+    private static function format_file_size(int $bytes): string {
+        if ($bytes >= 1048576) {
+            return round($bytes / 1048576, 1) . ' MB';
+        }
+        return round($bytes / 1024) . ' KB';
+    }
+
+    private static function decode_backend_response($response, int $httpcode, string $gamemode, string $fileinfo = ''): array {
+        $httpdesc = $fileinfo !== '' ? $httpcode . ' — ' . $fileinfo : $httpcode;
         if ($httpcode >= 300 && $httpcode < 400) {
-            throw new \moodle_exception('aierrorhttp', 'memory3d', '', $httpcode);
+            throw new \moodle_exception('aierrorhttp', 'memory3d', '', $httpdesc);
         }
         if ($httpcode >= 400) {
-            throw new \moodle_exception('aierrorhttp', 'memory3d', '', $httpcode);
+            throw new \moodle_exception('aierrorhttp', 'memory3d', '', $httpdesc);
         }
         if (!is_string($response) || trim($response) === '') {
             throw new \moodle_exception('aierroremptyresponse', 'memory3d');
